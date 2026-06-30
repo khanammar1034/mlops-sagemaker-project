@@ -1,6 +1,8 @@
+import os
+import joblib
+
 from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
-import joblib
 
 print("Loading dataset...")
 
@@ -18,8 +20,18 @@ model = RandomForestClassifier(
 
 model.fit(X, y)
 
-print("Saving model...")
+# -----------------------------
+# Determine where to save model
+# -----------------------------
 
-joblib.dump(model, "model.joblib")
+model_dir = os.environ.get("SM_MODEL_DIR", ".")
+
+os.makedirs(model_dir, exist_ok=True)
+
+model_path = os.path.join(model_dir, "model.joblib")
+
+print(f"Saving model to: {model_path}")
+
+joblib.dump(model, model_path)
 
 print("Training complete!")
